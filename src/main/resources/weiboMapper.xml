@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qunar.liwei.graduation.weibo_crawler.weiboMapper">
+	<cache/>
+	<insert id="save" parameterType="MicroBlog" flushCache="true">
+		insert into sinaweibo_data
+		values(null,#{nickName},#{type},#{microBlogContent},
+		#{mediaBox},#{feedFrom},#{rePostContent},#{time},now())
+	</insert>
+	
+	<select id="isBlogExist" parameterType="MicroBlog" resultType="Integer">
+		SELECT Count(id) FROM sinaweibo_data
+		WHERE nickName=#{nickName} AND microBlogContent=#{microBlogContent} AND
+		type=#{type} AND time=#{time}
+	</select>
+	
+	<select id="getMinDate" parameterType="String" resultType="java.sql.Timestamp">
+		select MIN(time) from sinaweibo_data
+		where nickName=#{nickName}
+	</select>
+	
+	<select id="getMaxDate" parameterType="String" resultType="java.sql.Timestamp">
+		select MAX(time) from sinaweibo_data
+		where nickName=#{nickName}
+	</select>
+
+    <insert id="saveFan" parameterType="MicroBlogUser" flushCache="true">
+        insert into sinaweibo_fans
+        values(null,#{nickName},#{ofWho},#{baseUrl},now())
+    </insert>
+
+    <select id="isFanExist" parameterType="MicroBlogUser" resultType="Integer">
+        SELECT Count(id) FROM sinaweibo_fans
+        WHERE nickName=#{nickName} AND ofWho=#{ofWho}
+    </select>
+
+    <insert id="saveFol" parameterType="MicroBlogUser" flushCache="true">
+        insert into sinaweibo_follows
+        values(null,#{nickName},#{ofWho},#{maxPage},#{baseUrl},now())
+    </insert>
+
+    <select id="isFolExist" parameterType="MicroBlogUser" resultType="Integer">
+        SELECT Count(id) FROM sinaweibo_follows
+        WHERE nickName=#{nickName} AND ofWho=#{ofWho}
+    </select>
+
+    <select id="follows" parameterType="String" resultType="MicroBlogUser">
+        SELECT baseUrl,nickName,ofWho,maxPage FROM sinaweibo_follows where ofWho = #{ofWho}
+    </select>
+
+    <select id="allFollows" parameterType="String" resultType="MicroBlogUser">
+        SELECT baseUrl,nickName,ofWho,maxPage FROM sinaweibo_follows
+    </select>
+
+    <select id="fans" parameterType="String" resultType="MicroBlogUser">
+        SELECT baseUrl,nickName,ofWho FROM sinaweibo_fans where ofWho = #{ofWho}
+    </select>
+
+    <select id="allFans" parameterType="String" resultType="MicroBlogUser">
+        SELECT baseUrl,nickName,ofWho FROM sinaweibo_fans
+    </select>
+
+    <insert id="saveSearch" parameterType="MicroBlog" flushCache="true">
+        insert into sinaweibo_search
+        values(null,#{keyword},#{nickName},#{type},#{microBlogContent},
+        #{mediaBox},#{feedFrom},#{rePostContent},#{time},now())
+    </insert>
+
+    <select id="isSearchExist" parameterType="MicroBlog" resultType="Integer">
+        SELECT Count(id) FROM sinaweibo_search
+        WHERE nickName=#{nickName} AND microBlogContent=#{microBlogContent} AND
+        type=#{type} AND time=#{time}
+    </select>
+
+</mapper>
