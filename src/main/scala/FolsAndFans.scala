@@ -6,19 +6,14 @@ import java.io.FileWriter
 object FolsAndFans extends App {
   val fans = UrlGet.getFans("http://weibo.cn/pennyliang")
   val fols = UrlGet.getFetchFollows("http://weibo.cn/pennyliang")
-//  UrlGet.getFetchFollows("http://weibo.cn/pennyliang")
-//  var a = false
-//  for (fan <- DBOperation.fans("梁斌penny")) {
-//    if (fan.nickName == "翁玉礼") a = true
-//    if (a) {
-//      UrlGet.getFans(fan.baseUrl)
-//      println(fan)
-//    }
-//  }
-//    for(fol <- DBOperation.follows("梁斌penny")) {
-//      UrlGet.getFollows(fol.baseUrl)
-//      println(fol)
-//    }
+  for (fan <- DBOperation.fans("梁斌penny")) {
+      UrlGet.getFans(fan.baseUrl)
+      println(fan)
+  }
+    for(fol <- DBOperation.follows("梁斌penny")) {
+      UrlGet.getFollows(fol.baseUrl)
+      println(fol)
+    }
 
   //  import java.io.{File,Writer}
   //  lazy val out = new FileWriter(new File("fans.txt"))

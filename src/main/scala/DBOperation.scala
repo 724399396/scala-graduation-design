@@ -133,7 +133,7 @@ object DBOperation extends Serializable {
   }
 
   def saveSearch(microBlog: MicroBlog):Int = {
-    if (!isBlogExist(microBlog)) {
+    if (!isSearchExist(microBlog)) {
       val statement =
         "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.saveSearch"
       val inserts = session.insert(statement, microBlog)
