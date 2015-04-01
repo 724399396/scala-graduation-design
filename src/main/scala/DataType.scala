@@ -11,10 +11,15 @@ class MicroBlog(@BeanProperty val nickName: String, @BeanProperty val `type`: St
 @SerialVersionUID(20150206L)
 class MicroBlogUser(@BeanProperty val baseUrl: String, @BeanProperty val nickName: String,
                     @BeanProperty val ofWho: String,
-                    @BeanProperty val maxPage: Int, var currentPage: Int = 1) extends Serializable {
+                    @BeanProperty var maxPage: Int, var currentPage: Int = 1) extends Serializable {
   def this() {
-    this(null, null, null, 1)
+    this(null, null, null, 0)
   }
 
   override def toString = "url: " + baseUrl + ", nickName: " + nickName + ", ofWho: " + ofWho
+}
+
+class TwoPerson(@BeanProperty val nickName: String,
+                @BeanProperty val feedName: String){
+
 }

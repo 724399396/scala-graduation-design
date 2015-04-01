@@ -15,20 +15,19 @@ import scala.collection.mutable.ArrayBuffer
  */
 object Search {
   def search(keyword: String, user: String, rank: String): Unit = {
-    while(true) {
-      for (i <- 1 to 100)
-        for (micro <- HtmlParse.getSearchMicroBlog(keyword,
-          HtmlParse.getDoc(String.format("http://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&sort=%s&page=%s",
-            URLEncoder.encode(keyword, "utf-8"), rank, i.toString))))
-          try {
-            DBOperation.saveSearch(micro.get)
-          } catch {
-            case _: Exception =>
-          }
-    }
+    for (i <- 1 to 100)
+      for (micro <- HtmlParse.getSearchMicroBlog(keyword,
+        HtmlParse.getDoc(String.format("http://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&sort=%s&page=%s",
+          URLEncoder.encode(keyword, "utf-8"), rank, i.toString))))
+        try {
+          DBOperation.saveSearch(micro.get)
+        } catch {
+          case _: Exception =>
+        }
   }
 
   def main(args: Array[String]) {
+    Console.println("开始")
     for(keyword <- List("旅游","西安","云南"); rank <- List("hot", "time"))
         search(keyword, "", rank)
   }

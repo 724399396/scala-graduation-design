@@ -7,8 +7,9 @@ object main extends App {
   //    out.writeObject(users)
   //var readUsers: List[MicroBlogUser] = new ObjectInputStream(new FileInputStream("users.se")).readObject().asInstanceOf[List[MicroBlogUser]]
   //  var readUsers: List[MicroBlogUser] = List(new MicroBlogUser("http://weibo.cn/pennyliang", 200, 1))
-  val subPage = 20
+  val subPage = 2
     var readUsers: List[MicroBlogUser] = DBOperation.follows("梁斌penny")
+  readUsers = readUsers ++ DBOperation.fans("梁斌penny")
   while (readUsers.size != 0) {
     val first = readUsers.head
     readUsers = readUsers.tail

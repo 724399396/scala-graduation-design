@@ -148,8 +148,15 @@ object DBOperation extends Serializable {
     session.commit()
     if (count > 0) true else false
   }
+  def weighted(query: TwoPerson): Int = {
+    val statement =
+      "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.weighted"
+    val weight: Int = session.selectOne(statement, query)
+    session.commit()
+    weight
+  }
 
   def main(args: Array[String]): Unit = {
-    println(DBOperation.follows("梁斌penny"))
+    println(weighted(new TwoPerson("梁斌penny", "吴军博士")))
   }
 }

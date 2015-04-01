@@ -15,15 +15,18 @@ object HtmlParse {
   def getDoc(url: String): Document = {
     var doc: Document = null
     while (doc == null) {
+      if (count == 0) {
+        cookie = cookies.next(); TimeUnit.SECONDS.sleep(2)
+      }
       try {
-        if (count == 0) {
-          cookie = cookies.next(); TimeUnit.SECONDS.sleep(5)
-        }
-        count = (count + 1) % 10
         doc = Jsoup.connect(url).timeout(1000).userAgent("Mozilla")
           .cookies(cookie).get()
       } catch {
-        case _: Exception => println("读取异常: " + url); TimeUnit.SECONDS.sleep(2)
+        case _: Exception => cookie = cookies.next()
+          printf("使用 %s 读取异常 %s 异常 %n" ,cookie("_T_WM") ,url)
+          TimeUnit.SECONDS.sleep(2)
+      } finally {
+        count = (count + 1) % 10
       }
     }
     doc
@@ -96,6 +99,15 @@ object UrlGet {
     mainUser +: getPointUsers(mainUrl, "a:containsOwn(关注)", true, DBOperation.saveFol)
   }
 
+  def getFetchFans(mainUrl: String): List[MicroBlogUser] = {
+    val mainDoc = HtmlParse.getDoc(mainUrl)
+    val mainName = mainDoc.title.substring(0, mainDoc.title().lastIndexOf("的"))
+    val mainUser = new MicroBlogUser(mainUrl,
+      mainName, mainName, getPages(mainDoc))
+    DBOperation.saveFol(mainUser)
+    mainUser +: getPointUsers(mainUrl, "a:containsOwn(粉丝)", true, DBOperation.saveFol)
+  }
+
   def getFollows(mainUrl: String): List[MicroBlogUser] = {
     getPointUsers(mainUrl, "a:containsOwn(关注)", false, DBOperation.saveFol)
   }
@@ -134,7 +146,7 @@ object UrlGet {
               val user = new MicroBlogUser(url, nickName, mainName, pages)
               user
             }
-          saver(user)
+          //saver(user)
           users = users :+ user
         } catch {
           case _: Throwable => Unit

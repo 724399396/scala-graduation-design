@@ -10,7 +10,7 @@ object CrawlerUtil {
   def converseTime(time: String): Timestamp = {
     val cal = Calendar.getInstance
     val minutes = cal.get(Calendar.MINUTE)
-    val hours = cal.get(Calendar.HOUR)
+    val hours = cal.get(Calendar.HOUR_OF_DAY)
     val month = cal.get(Calendar.MONTH) + 1
     val day = cal.get(Calendar.DAY_OF_MONTH)
     time match {

@@ -4,16 +4,46 @@ import java.io.FileWriter
  * Created by liwei on 15-3-17.
  */
 object FolsAndFans extends App {
-  val fans = UrlGet.getFans("http://weibo.cn/pennyliang")
-  val fols = UrlGet.getFetchFollows("http://weibo.cn/pennyliang")
-  for (fan <- DBOperation.fans("梁斌penny")) {
-      UrlGet.getFans(fan.baseUrl)
-      println(fan)
-  }
-    for(fol <- DBOperation.follows("梁斌penny")) {
-      UrlGet.getFollows(fol.baseUrl)
-      println(fol)
+
+  import scala.util.control.Breaks._
+
+  breakable {
+    val fans = UrlGet.getFetchFans("http://weibo.cn/pennyliang")
+    for (fan <- fans) {
+      if (DBOperation.isFanExist(fan)) break
+      println("第一级： " + fan + ": " + DBOperation.isFanExist(fan))
+      DBOperation.saveFan(fan)
     }
+  }
+  breakable {
+    for (fol <- UrlGet.getFetchFollows("http://weibo.cn/pennyliang")) {
+      if (DBOperation.isFolExist(fol)) break
+      println("主 Fol " + fol + ": " + DBOperation.isFolExist(fol))
+      DBOperation.saveFol(fol)
+    }
+  }
+
+  for (fan <- DBOperation.fans("梁斌penny")) {
+    breakable {
+      println(fan)
+      for (subFan <- UrlGet.getFans(fan.baseUrl)) {
+        if (DBOperation.isFanExist(subFan)) break
+        DBOperation.saveFan(subFan)
+        println(subFan)
+      }
+    }
+  }
+
+  for (fol <- DBOperation.follows("梁斌penny")) {
+    breakable {
+      println(fol)
+      for (subFol <- UrlGet.getFollows(fol.baseUrl)) {
+        if (DBOperation.isFolExist(subFol)) break
+        DBOperation.saveFol(subFol)
+        println(subFol)
+      }
+    }
+  }
 
   //  import java.io.{File,Writer}
   //  lazy val out = new FileWriter(new File("fans.txt"))
