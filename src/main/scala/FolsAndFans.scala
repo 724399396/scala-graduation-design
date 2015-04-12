@@ -15,6 +15,7 @@ object FolsAndFans extends App {
       DBOperation.saveFan(fan)
     }
   }
+  println("第一级的fan完成")
   breakable {
     for (fol <- UrlGet.getFetchFollows("http://weibo.cn/pennyliang")) {
       if (DBOperation.isFolExist(fol)) break
@@ -22,7 +23,7 @@ object FolsAndFans extends App {
       DBOperation.saveFol(fol)
     }
   }
-
+  println("第一级的follow完成")
   for (fan <- DBOperation.fans("梁斌penny")) {
     breakable {
       println(fan)
@@ -33,7 +34,7 @@ object FolsAndFans extends App {
       }
     }
   }
-
+  println("第二级的fan完成")
   for (fol <- DBOperation.follows("梁斌penny")) {
     breakable {
       println(fol)
@@ -44,6 +45,7 @@ object FolsAndFans extends App {
       }
     }
   }
+  println("第二级的follow完成")
 
   //  import java.io.{File,Writer}
   //  lazy val out = new FileWriter(new File("fans.txt"))

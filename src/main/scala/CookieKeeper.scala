@@ -12,21 +12,21 @@ object CookieKeeper {
   val cookie3 = Map("_T_WM" -> "cbe9d479ea25fd43743b99991708da7a",
     "SUB" -> "_2A254A6oKDeTxGeNN6FQQ8ynPyjuIHXVbDzZCrDV6PUJbrdANLXj5kW0430AfU-f6L5A-AZ5UcRIZLfsmTA..",
     "gsid_CTandWM" -> "4uv43fd81Lbfiu3CzFxcdmoaJ57")
-  // ougandun9159640zha@163.com----qwer1234
+  // ougandun9159640zha@163.com----qwer1234(冻结)
   val cookie4 = Map("_T_WM" -> "35a9af3fe054741bd4fd9971316fb585",
     "SUB" -> "_2A254Hm6TDeTxGeNL6lAR8CfPwjiIHXVb4XLbrDV6PUJbrdAKLWfykW1CI7JvZshUXjzYCUwgF5EejGxGtQ..",
     "gsid_CTandWM" -> "4upxe7771CFuz84esQhBIn7Vn6m")
   //ruymv89814dh@163.com----qqq222----幼矿榆历存----5512009394----ruymv89814dh@163.com----xtl76983----
-  val cookie5 = Map("_T_WM" -> "a6b5c4f24bac2b980f87d6cfaf232824",
-    "SUB" -> "_2A254Hm8ADeTxGeNL6lAR8CfPwjqIHXVb4XFIrDV6PUJbrdAKLU6skW0ZxsveV1aVzlLySVk4CxeDhKZAXA..",
-    "gsid_CTandWM" -> "4uHBe7771dnTyvTGFTtZ0n7Vn6o")
+  val cookie5 = Map("_T_WM" -> "299916b7a64b3f237f6cd4a65d04e68d",
+    "SUB" -> "_2A254LabdDeTxGeNL6lAR8CfPwjqIHXVb0cqVrDV6PUNbvtAKLXXNkW2PNvS5ubAkmf_9Tu_sGNb_xFdXUQ..",
+    "gsid_CTandWM" -> "4u0Ge7771fNeZPQque39gn7Vn6o")
   //yonghui9915@163.com----qqq222----显抗露运舒----5512009396----yonghui9915@163.com----lianmeiyongzhan----
   val allCookies = {
     val l = new LoopList[Map[String, String]]();
     l.add(cookie1);
     l.add(cookie2);
-    l.add(cookie3);
-    l.add(cookie4);
+    //l.add(cookie3);
+    //l.add(cookie4);
     l.add(cookie5);
     l
   }

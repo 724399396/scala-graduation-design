@@ -1,6 +1,8 @@
 import java.sql.Timestamp
 import java.util.concurrent.TimeUnit
 
+import akka.actor.{Actor, Props, ActorSystem}
+import akka.routing.RoundRobinPool
 import org.jsoup._
 import org.jsoup.Connection.Method
 import org.jsoup.nodes.{Element, Document}
@@ -10,9 +12,6 @@ import java.net.URLEncoder
 
 import scala.collection.mutable.ArrayBuffer
 
-/**
- * Created by li-wei on 2015/3/24.
- */
 object Search {
   def search(keyword: String, user: String, rank: String): Unit = {
     for (i <- 1 to 100)
@@ -27,8 +26,27 @@ object Search {
   }
 
   def main(args: Array[String]) {
-    Console.println("开始")
-    for(keyword <- List("旅游","西安","云南"); rank <- List("hot", "time"))
+    val system = ActorSystem("weiboCrawler")
+    val crawler = system.actorOf(Props[SearchCrawler].withRouter(RoundRobinPool(8)), name="search_crawler")
+    val saver = system.actorOf(Props[SearchSaver], name="search_saver")
+    println(saver.getClass)
+//    for(keyword <- List("旅游","西安","云南"); rank <- List("hot", "time"))
+//      crawler ! (keyword, rank, saver)
+  }
+
+  class SearchCrawler extends Actor{
+    def receive = {
+      case Tuple2(keyword: String,rank: String) =>
         search(keyword, "", rank)
+      case x: MicroBlogUser =>
+
+    }
+  }
+
+  class SearchSaver extends Actor {
+    def receive = {
+      case x: MicroBlog =>  DBOperation.saveSearch(x)
+    }
   }
 }
+

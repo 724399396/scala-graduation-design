@@ -1,4 +1,5 @@
 import java.sql.Timestamp
+import java.util.Random
 import java.util.concurrent.TimeUnit
 
 import org.jsoup.Jsoup
@@ -8,26 +9,31 @@ import scala.collection.JavaConversions.{mapAsJavaMap, asScalaIterator}
 import scala.collection.mutable.ArrayBuffer
 
 object HtmlParse {
-  var count = 0
   val cookies = CookieKeeper.allCookies
   var cookie: Map[String, String] = null
+  val random: Random = new Random()
+  var error = false;
 
   def getDoc(url: String): Document = {
     var doc: Document = null
     while (doc == null) {
-      if (count == 0) {
-        cookie = cookies.next(); TimeUnit.SECONDS.sleep(2)
-      }
       try {
-        doc = Jsoup.connect(url).timeout(1000).userAgent("Mozilla")
-          .cookies(cookie).get()
+        doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36").
+          cookies(CookieKeeper.cookie5).get()
       } catch {
-        case _: Exception => cookie = cookies.next()
-          printf("使用 %s 读取异常 %s 异常 %n" ,cookie("_T_WM") ,url)
-          TimeUnit.SECONDS.sleep(2)
+        case _: Exception => printf("读取 %s 异常 %n"  ,url)
       } finally {
-        count = (count + 1) % 10
+        TimeUnit.SECONDS.sleep(random.nextInt(10))
       }
+    }
+    if (!error) {
+      if (doc.title().startsWith("帐号异常")) {
+        error = true;
+        val file = "D:\\work\\mafengwo\\c.mp3";
+        Runtime.getRuntime().exec("cmd /c start " + file.replaceAll(" ", "\" \""));
+      }
+    } else {
+      TimeUnit.MINUTES.sleep(10)
     }
     doc
   }
@@ -134,7 +140,7 @@ object UrlGet {
           val url = follow.absUrl("href")
           val user =
             if (!pageNeed) {
-              val pages = 1;
+              val pages = 0;
               val nickName = follow.text()
               val user = new MicroBlogUser(url, nickName, mainName, pages)
               user

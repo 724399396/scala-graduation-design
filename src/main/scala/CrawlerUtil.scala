@@ -42,7 +42,11 @@ object CrawlerUtil {
         val cal = Calendar.getInstance()
         val result = cal.get(Calendar.YEAR) + "-" + realMonth +
           "-" + realDay + " " + hoursAndMi
-        new Timestamp(minute.parseObject(result).asInstanceOf[Date].getTime)
+        try {
+          new Timestamp(minute.parseObject(result).asInstanceOf[Date].getTime)
+        } catch {
+          case x: Exception => println(result); new Timestamp(new Date().getTime)
+        }
 
       case c4 => new Timestamp(second.parseObject(c4).asInstanceOf[Date].getTime)
     }
