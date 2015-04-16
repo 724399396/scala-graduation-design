@@ -17,16 +17,14 @@ object CookieKeeper {
     "SUB" -> "_2A254Hm6TDeTxGeNL6lAR8CfPwjiIHXVb4XLbrDV6PUJbrdAKLWfykW1CI7JvZshUXjzYCUwgF5EejGxGtQ..",
     "gsid_CTandWM" -> "4upxe7771CFuz84esQhBIn7Vn6m")
   //ruymv89814dh@163.com----qqq222----幼矿榆历存----5512009394----ruymv89814dh@163.com----xtl76983----
-  val cookie5 = Map("_T_WM" -> "299916b7a64b3f237f6cd4a65d04e68d",
-    "SUB" -> "_2A254LabdDeTxGeNL6lAR8CfPwjqIHXVb0cqVrDV6PUNbvtAKLXXNkW2PNvS5ubAkmf_9Tu_sGNb_xFdXUQ..",
+  val cookie5 = Map("_T_WM" -> "9dabafeca533437fdd0bc0514a557653",
+    "SUB" -> "_2A254KYoKDeTxGeNL6lAR8CfPwjqIHXVb1RZCrDV6PUJbrdANLXf3kW05cvF6iodsxdeUgAQYaKVTi1-JRw..",
     "gsid_CTandWM" -> "4u0Ge7771fNeZPQque39gn7Vn6o")
   //yonghui9915@163.com----qqq222----显抗露运舒----5512009396----yonghui9915@163.com----lianmeiyongzhan----
   val allCookies = {
     val l = new LoopList[Map[String, String]]();
     l.add(cookie1);
     l.add(cookie2);
-    //l.add(cookie3);
-    //l.add(cookie4);
     l.add(cookie5);
     l
   }

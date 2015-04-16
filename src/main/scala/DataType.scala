@@ -19,7 +19,26 @@ class MicroBlogUser(@BeanProperty val baseUrl: String, @BeanProperty val nickNam
   override def toString = "url: " + baseUrl + ", nickName: " + nickName + ", ofWho: " + ofWho
 }
 
-class TwoPerson(@BeanProperty val nickName: String,
-                @BeanProperty val feedName: String){
+@SerialVersionUID(20150416L)
+class TwoPerson(@BeanProperty var nickName: String,
+                @BeanProperty var feedFrom: String) extends Serializable{
+  def this() { this(null,null) }
 
+
+  override def toString = s"TwoPerson($nickName, $feedFrom)"
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[TwoPerson]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: TwoPerson =>
+      (that canEqual this) &&
+        nickName == that.nickName &&
+        feedFrom == that.feedFrom
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(nickName, feedFrom)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }

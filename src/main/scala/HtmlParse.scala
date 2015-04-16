@@ -18,8 +18,13 @@ object HtmlParse {
     var doc: Document = null
     while (doc == null) {
       try {
-        doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36").
-          cookies(CookieKeeper.cookie5).get()
+        if (random.nextBoolean()) {
+          doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36").
+            cookies(CookieKeeper.cookie5).get()
+        } else {
+          doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko").
+            cookies(CookieKeeper.cookie2).get()
+        }
       } catch {
         case _: Exception => printf("读取 %s 异常 %n"  ,url)
       } finally {
@@ -27,13 +32,13 @@ object HtmlParse {
       }
     }
     if (!error) {
-      if (doc.title().startsWith("帐号异常")) {
+      if (doc.title().startsWith("帐号异常") || doc.title() == "微博广场") {
         error = true;
         val file = "D:\\work\\mafengwo\\c.mp3";
         Runtime.getRuntime().exec("cmd /c start " + file.replaceAll(" ", "\" \""));
       }
     } else {
-      TimeUnit.MINUTES.sleep(10)
+      TimeUnit.MINUTES.sleep(20)
     }
     doc
   }

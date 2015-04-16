@@ -2,7 +2,7 @@ import java.net.URLEncoder
 
 import HtmlParse._
 import akka.actor.{ActorRef, ActorSystem, Props, Actor}
-import akka.routing.RoundRobinRouter
+import akka.routing.{SmallestMailboxRouter, RoundRobinRouter}
 
 
 /**
@@ -18,7 +18,7 @@ object main extends App {
   case class Person(name: String) extends CrawlerMessage
   case class PersonPage(url: String) extends CrawlerMessage
   case class PersonMicro(microBlog: MicroBlog) extends CrawlerMessage
-  case class BadMicro() extends CrawlerMessage
+  case object OnePageFinish extends CrawlerMessage
   case class End(time: Long) extends CrawlerMessage
 
   class Crawler extends Actor {
@@ -26,13 +26,15 @@ object main extends App {
       case PersonPage(url) =>
         println("fetch: " + url)
         getMicroBlog(getDoc(url)).foreach {
-          x => if (x != None) sender ! PersonMicro(x.get) else sender ! BadMicro
+          x => if (!x.isEmpty) sender ! PersonMicro(x.get)
         }
+        sender ! OnePageFinish
       case SearchPage(keyword, url) =>
         println("fetch: " + url)
         getSearchMicroBlog(keyword, getDoc(url)).foreach {
-          x => if (x != None) sender ! SearchMicro(x.get) else sender ! BadMicro
+          x => if (x != None) sender ! SearchMicro(x.get)
         }
+        sender ! OnePageFinish
     }
   }
 
@@ -41,7 +43,7 @@ object main extends App {
     val start: Long = System.currentTimeMillis
     var nrOfResults: Int = _
     val workerRouter = context.actorOf(
-      Props[Crawler].withRouter(RoundRobinRouter(8)), name = "crawlerRouter")
+      Props[Crawler].withRouter(SmallestMailboxRouter(8)), name = "crawlerRouter")
     def receive = {
       case Search(keyword,rank) =>
         for (i <- 1 to searchPageNumbers)
@@ -56,21 +58,9 @@ object main extends App {
         }
       case SearchMicro(micro) =>
         DBOperation.saveSearch(micro)
-        nrOfResults += 1
-        println("now: %d, total: %d".format(nrOfResults, nrOfElements))
-        if (nrOfResults == nrOfElements) {
-          listener ! End(System.currentTimeMillis - start)
-          context.stop(self)
-        }
       case PersonMicro(micro) =>
         DBOperation.save(micro)
-        nrOfResults += 1
-        println("now: %d, total: %d".format(nrOfResults, nrOfElements))
-        if (nrOfResults == nrOfElements) {
-          listener ! End(System.currentTimeMillis - start)
-          context.stop(self)
-        }
-      case BadMicro =>
+      case OnePageFinish =>
         nrOfResults += 1
         println("now: %d, total: %d".format(nrOfResults, nrOfElements))
         if (nrOfResults == nrOfElements) {
@@ -92,12 +82,11 @@ object main extends App {
   def start(keyword: List[String], rank: List[String], name: String) = {
     val system = ActorSystem("SearchSystem")
     val listener = system.actorOf(Props[Listener], name = "listener")
-    val nrOfElements = keyword.size * rank.size * 100 * 9 + getPage(DBOperation.fans(name)) * 10
-                        + getPage(DBOperation.follows(name)) * 10
+    val nrOfElements = keyword.size * rank.size * 100  + getPage(DBOperation.fans(name)) + getPage(DBOperation.follows(name))
     val master = system.actorOf(Props(new Master(nrOfElements, listener)), name="master")
+    master ! Person(name)
     for(keyword <- keyword; rank <- rank)
       master ! Search(keyword, rank)
-    master ! Person(name)
   }
 
   def getPage(persons: List[MicroBlogUser]): Int = {
@@ -105,7 +94,7 @@ object main extends App {
   }
 
   def help(x: Int): Int = {
-    if (x < 3) x else 2
+    if (x < 2) x else 1
   }
 
 }

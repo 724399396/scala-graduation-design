@@ -35,22 +35,6 @@ object DBOperation extends Serializable {
     if (count > 0) true else false
   }
 
-  def getMaxDate(nickName: String): Timestamp = {
-    val statement =
-      "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.getMaxDate"
-    val date: Timestamp = session.selectOne(statement, nickName)
-    session.commit()
-    date
-  }
-
-  def getMinDate(nickName: String): Timestamp = {
-    val statement =
-      "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.getMinDate"
-    val date: Timestamp = session.selectOne(statement, nickName)
-    session.commit()
-    date
-  }
-
   // MicroBlogUser
   def saveFan(fan: MicroBlogUser): Int = {
     if (!isFanExist(fan)) {
@@ -156,7 +140,18 @@ object DBOperation extends Serializable {
     weight
   }
 
+  def allRelation(): Set[TwoPerson] ={
+    val statement =
+      "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.allRelation"
+    import scala.collection.JavaConversions.asScalaBuffer
+    val relations: mutable.Buffer[TwoPerson] = session.selectList(statement).asInstanceOf[java.util.ArrayList[TwoPerson]]
+    session.commit()
+    relations.toSet
+  }
+
+
   def main(args: Array[String]): Unit = {
-    println(weighted(new TwoPerson("梁斌penny", "吴军博士")))
+    //println(weighted(new TwoPerson("梁斌penny", "吴军博士")))
+    println(allRelation().size)
   }
 }

@@ -13,20 +13,11 @@
 		WHERE nickName=#{nickName} AND microBlogContent=#{microBlogContent} AND
 		type=#{type} AND time=#{time}
 	</select>
-	
-	<select id="getMinDate" parameterType="String" resultType="java.sql.Timestamp">
-		select MIN(time) from sinaweibo_data
-		where nickName=#{nickName}
-	</select>
-	
-	<select id="getMaxDate" parameterType="String" resultType="java.sql.Timestamp">
-		select MAX(time) from sinaweibo_data
-		where nickName=#{nickName}
-	</select>
+
 
     <insert id="saveFan" parameterType="MicroBlogUser" flushCache="true">
         insert into sinaweibo_fans
-        values(null,#{nickName},#{ofWho},#{baseUrl},now())
+        values(null,#{nickName},#{ofWho},#{maxPage},#{baseUrl},now())
     </insert>
 
     <select id="isFanExist" parameterType="MicroBlogUser" resultType="Integer">
@@ -53,11 +44,11 @@
     </select>
 
     <select id="fans" parameterType="String" resultType="MicroBlogUser">
-        SELECT baseUrl,nickName,ofWho FROM sinaweibo_fans where ofWho = #{ofWho}
+        SELECT baseUrl,nickName,ofWho,maxPage FROM sinaweibo_fans where ofWho = #{ofWho}
     </select>
 
     <select id="allFans" parameterType="String" resultType="MicroBlogUser">
-        SELECT baseUrl,nickName,ofWho FROM sinaweibo_fans
+        SELECT baseUrl,nickName,ofWho,maxPage FROM sinaweibo_fans
     </select>
 
     <insert id="saveSearch" parameterType="MicroBlog" flushCache="true">
@@ -70,6 +61,14 @@
         SELECT Count(id) FROM sinaweibo_search
         WHERE nickName=#{nickName} AND microBlogContent=#{microBlogContent} AND
         type=#{type} AND time=#{time}
+    </select>
+
+    <select id="weighted" parameterType="TwoPerson" resultType="Int">
+        select Count(id) from sinaweibo_data where feedFrom = #{feedFrom} AND nickName = #{nickName}
+    </select>
+
+    <select id="allRelation" resultType="TwoPerson">
+        select nickName,feedFrom from sinaweibo_data where feedFrom is not null AND nickName != feedFrom;
     </select>
 
 </mapper>
