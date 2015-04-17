@@ -43,7 +43,7 @@ object main extends App {
     val start: Long = System.currentTimeMillis
     var nrOfResults: Int = _
     val workerRouter = context.actorOf(
-      Props[Crawler].withRouter(SmallestMailboxRouter(8)), name = "crawlerRouter")
+      Props[Crawler].withRouter(RoundRobinRouter(8)), name = "crawlerRouter")
     def receive = {
       case Search(keyword,rank) =>
         for (i <- 1 to searchPageNumbers)

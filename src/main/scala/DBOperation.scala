@@ -140,13 +140,13 @@ object DBOperation extends Serializable {
     weight
   }
 
-  def allRelation(): Set[TwoPerson] ={
+  def allRelation(): List[TwoPerson] ={
     val statement =
       "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.allRelation"
     import scala.collection.JavaConversions.asScalaBuffer
     val relations: mutable.Buffer[TwoPerson] = session.selectList(statement).asInstanceOf[java.util.ArrayList[TwoPerson]]
     session.commit()
-    relations.toSet
+    relations.toList
   }
 
 
