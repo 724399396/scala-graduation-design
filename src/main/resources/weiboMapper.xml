@@ -68,7 +68,11 @@
     </select>
 
     <select id="allRelation" resultType="TwoPerson">
-        select nickName,feedFrom from sinaweibo_data where feedFrom is not null AND nickName != feedFrom;
+        select nickName,feedFrom from sinaweibo_data where feedFrom is not null AND nickName != feedFrom
+    </select>
+
+    <select id="contactContent" parameterType="TwoPerson" resultType="String">
+        SELECT rePostContent from sinaweibo_data where feedFrom = #{feedFrom} AND nickName = #{nickName}
     </select>
 
 </mapper>

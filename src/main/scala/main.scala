@@ -73,8 +73,8 @@ object main extends App {
   class Listener extends Actor {
     def receive = {
       case End(time) ⇒
-        println("Using time: \t%s"
-          .format(time))
+        println("Using time: %d s\t"
+          .format(time / 1000))
         context.system.shutdown()
     }
   }

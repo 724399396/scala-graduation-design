@@ -149,9 +149,17 @@ object DBOperation extends Serializable {
     relations.toList
   }
 
+  def contactContent(query: TwoPerson) = {
+    val statement =
+      "com.qunar.liwei.graduation.weibo_crawler.weiboMapper.contactContent"
+    import scala.collection.JavaConversions.asScalaBuffer
+    val contents: mutable.Buffer[String] = session.selectList(statement, query).asInstanceOf[java.util.ArrayList[String]]
+    session.commit()
+    contents.toList
+  }
 
   def main(args: Array[String]): Unit = {
-    //println(weighted(new TwoPerson("梁斌penny", "吴军博士")))
-    println(allRelation().size)
+    println(weighted(new TwoPerson("梁斌penny", "新浪科技")))
+    contactContent(new TwoPerson("梁斌penny", "新浪科技")).foreach(println _)
   }
 }
