@@ -5,11 +5,11 @@ import scala.io.Source
 
 object RelationShip extends App {
 
-
+  //prepareData()
   /** * print friend
     */
   //  prepareMap("relation-all.txt", "relation-seri.back")
-  val relations = readData("relation-seri.back")
+  val relations = readMap("relation-seri.back")
   //  println(relations)
 
   while (true) {
@@ -46,7 +46,7 @@ object RelationShip extends App {
     serialOut.close()
   }
 
-  private def readData(source: String): Map[String, List[WeightPerson]] = {
+  private def readMap(source: String): Map[String, List[WeightPerson]] = {
     val serialIn = new ObjectInputStream(new FileInputStream("relation-seri.back"))
     serialIn.readObject().asInstanceOf[Map[String, List[WeightPerson]]]
   }
